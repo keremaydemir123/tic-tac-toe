@@ -4,7 +4,7 @@ const turnInfo = document.querySelector(".turn-info");
 
 let state = "X";
 let gridArray = new Array(9);
-gridArray.fill(undefined, 0, 8);
+gridArray.fill(undefined, 0, 9);
 let winner;
 
 printTurnInfo(state);
@@ -41,9 +41,11 @@ cells.forEach((cell, index) => {
 function checkWinner() {
   const rows = getRows();
   const columns = getColumns();
+  const diagonals = getDiagonals();
 
   checkLines(rows);
   checkLines(columns);
+  checkLines(diagonals);
 
   // if grid is full but no undefined (tie)
   if (!gridArray.includes(undefined)) {
@@ -76,12 +78,14 @@ function checkLines(array) {
       if (line[0] != undefined && index === line[0]) return true;
     });
     if (isWin) {
+      console.log("array", array);
+      console.log("index", index);
       winner = array[index][0];
     }
   });
 }
 function printTurnInfo(state) {
-  turnInfo.querySelector(".turn-info-h3").innerText = `Turn of ${state}`;
+  turnInfo.querySelector(".turn-info-h3").innerText = `${state}'s Turn`;
 }
 
 function switchState(state) {
@@ -101,17 +105,31 @@ function getRows() {
 }
 
 function getColumns() {
-  let column1 = [],
-    column2 = [],
-    column3 = [],
-    columns = [];
-  for (let i = 0; i < 9; i++) {
-    if (i % 3 === 0) column1.push(gridArray[i]);
-    if (i % 3 === 1) column2.push(gridArray[i]);
-    if (i % 3 === 2) column3.push(gridArray[i]);
+  let columns = [[], [], []];
+  for (let i = 0; i < gridArray.length; i++) {
+    if (i % 3 === 0) columns[0].push(gridArray[i]);
+    if (i % 3 === 1) columns[1].push(gridArray[i]);
+    if (i % 3 === 2) columns[2].push(gridArray[i]);
   }
-  columns.push(column1);
-  columns.push(column2);
-  columns.push(column3);
+  console.log(columns);
   return columns;
+}
+
+function getDiagonals() {
+  let diagonals = [[], []];
+  let rows = getRows();
+  let i = 0;
+  while (i < rows.length) {
+    diagonals[0].push(rows[i][i]);
+    i++;
+  }
+  i = 2;
+  let k = 0;
+  while (i >= 0) {
+    diagonals[1].push(rows[k][i]);
+    i--;
+    k++;
+  }
+  console.log(diagonals);
+  return diagonals;
 }
