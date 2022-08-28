@@ -59,6 +59,9 @@ header {
     opacity: 1;
   }
 }
+.permanent {
+  pointer-events: none;
+}
 
 .congrats-container {
   animation: append-animate 0.4s linear;
