@@ -15,8 +15,9 @@ cells.forEach((cell, index) => {
   cell.addEventListener("click", (e) => {
     e.target.innerText = state;
     e.target.classList.add("permanent");
+    e.target.classList.add(`${state}`);
     gridArray[index] = state;
-    let winner = checkWinner();
+    checkWinner();
     if (winner) {
       endGame(winner);
     }
@@ -41,15 +42,13 @@ function checkWinner() {
   const rows = getRows();
   const columns = getColumns();
 
-  if (checkLines(rows)) return checkLines(rows);
-  if (checkLines(columns)) return checkLines(columns);
+  checkLines(rows);
+  checkLines(columns);
 
-  // grid is full but no winner (tie)
+  // if grid is full but no undefined (tie)
   if (!gridArray.includes(undefined)) {
-    return "tie";
+    winner = "tie";
   }
-
-  return false;
 }
 
 function endGame(winner) {
@@ -57,24 +56,21 @@ function endGame(winner) {
 
   if (winner == "tie") message = `No winner: Tie`;
   else message = `${winner} won the game`;
-
-  congrats.content.querySelector(".winner-info").innerText = message;
+  let winnerInfo = congrats.content.querySelector(".winner-info");
+  winnerInfo.innerText = message;
+  winnerInfo.classList.add(`${winner}`);
   congrats.content
     .querySelector(".play-again")
     .addEventListener("click", () => window.location.reload());
 
   cells.forEach((cell) => cell.classList.add("disabled"));
 
-  setTimeout(() => {
-    document.body.append(congrats.content);
-    turnInfo.remove();
-  }, 500);
+  document.body.append(congrats.content);
+  turnInfo.remove();
 }
 
 function checkLines(array) {
   // checks whether a line in grid has same values
-  // if so, return its value as winner ex) X X X => winner = X
-  let winner;
   array.forEach((line, index) => {
     let isWin = line.every((index) => {
       if (line[0] != undefined && index === line[0]) return true;
@@ -83,17 +79,17 @@ function checkLines(array) {
       winner = array[index][0];
     }
   });
-  return winner;
 }
 function printTurnInfo(state) {
   turnInfo.querySelector(".turn-info-h3").innerText = `Turn of ${state}`;
 }
+
 function switchState(state) {
   if (state === "X") state = "O";
-  else if (state === "O") state = "X";
-  else throw new Error("state is differen than X and O");
+  else state = "X";
   return state;
 }
+
 function getRows() {
   let rows = [],
     i = 0,
@@ -103,6 +99,7 @@ function getRows() {
   }
   return rows;
 }
+
 function getColumns() {
   let column1 = [],
     column2 = [],
