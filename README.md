@@ -1,2 +1,2 @@
 # tic-tac-toe
-Basic tic-tac-toe game
+Basic tic-tac-toe game for Fimple React Practium
